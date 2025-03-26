@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil </title>
+    <style>
+     
+    :root {
+        --primary: #4361ee;
+        --primary-dark: #3a0ca3;
+        --secondary: #f72585;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --gray: #6c757d;
+        --border-radius: 0.5rem;
+        --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    body {
+        font-family: 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        color: var(--dark);
+        background-color: #f1f5f9;
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    #therme {
+        background-color: white;
+        color: var(--primary);
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin: 1rem 0;
+        border-left: 4px solid var(--primary);
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0% { opacity: 0.8; }
+        50% { opacity: 1; }
+        100% { opacity: 0.8; }
+    }
+
+    #profile, #commandes {
+        background-color: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        margin: 1.5rem 0;
+        transition: var(--transition);
+    }
+
+    #profile:hover, #commandes:hover {
+        box-shadow: 0 1rem 1.5rem rgba(0, 0, 0, 0.1);
+    }
+
+    h2, h3 {
+        color: var(--primary-dark);
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--light);
+    }
+
+    #user-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--primary);
+        margin: 0 auto 1.5rem;
+        display: block;
+        box-shadow: var(--box-shadow);
+    }
+
+    .users-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+        box-shadow: var(--box-shadow);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+    }
+
+    .users-table th {
+        background-color: var(--primary);
+        color: white;
+        padding: 1rem;
+        text-align: left;
+    }
+
+    .users-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .users-table tr:nth-child(even) {
+        background-color: var(--light);
+    }
+
+    .users-table tr:hover {
+        background-color: #e9ecef;
+    }
+
+    .users-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .profile-btn {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-weight: 500;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .profile-btn:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+
+    .profile-btn:active {
+        transform: translateY(0);
+    }
+
+    #users-table-container {
+        background-color: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+    }
+
+    strong {
+        color: var(--primary-dark);
+    }
+
+    p {
+        margin-bottom: 1rem;
+        padding: 0.8rem;
+        background-color: var(--light);
+        border-radius: var(--border-radius);
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 1rem;
+        }
+        
+        #profile, #commandes, #users-table-container {
+            padding: 1.5rem;
+        }
+        
+        .users-table {
+            display: block;
+            overflow-x: auto;
+        }
+    }
+
+    </style>
+</head>
+<body>
+
+    <div id="therme" class="hidden">Chargement en cours...</div>
+
+    <div id="profile"></div>
+    <div id="commandes"></div>
+
+    <div id="users-table-container"></div>
+
+    <script>
+        // les utilisateurs
+        const utilisateurs = [
+            { 
+                name: 'youness', 
+                login: 'youness123', 
+                email: 'youness@gmail.com', 
+                avatar: 'youness.png', 
+                gender: 'Masculin', 
+                address: 'sale ', 
+                commandes: [
+                    { id: 1, item: 'PC', date: '2023-05-24', price: 5500 },
+                    { id: 2, item: 'watch', date: '2025-02-25', price: 2000 }
+                ] 
+            },
+            { 
+                name: 'salma', 
+                login: 'salma123', 
+                email: 'salma@gmail.com', 
+                avatar: 'salma.png', 
+                gender: 'Féminin', 
+                address: 'karia sale', 
+                commandes: [
+                    { id: 3, item: 'Tablet', date: '2023-03-27', price: 500 },
+                    { id: 4, item: 'tele', date: '2023-03-28', price: 7000 }
+                ] 
+            }
+        ];
+
+        // Fonction pour  récupérer les données d'un utilisateur
+        async function recupererDonneesUtilisateur(utilisateur) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(utilisateur);
+                }, 3000);
+            });
+        }
+
+        // Afficher le  profil d'un utilisateur
+        function afficherProfil(donneesUtilisateur) {
+            const divProfil = document.getElementById("profile");
+            divProfil.innerHTML = `
+              <h2 style="text-align=center;"> Profil</h2>
+                <img id="user-avatar" src="${donneesUtilisateur.avatar}" alt="Avatar de ${donneesUtilisateur.name}">
+                <p><strong>Nom :</strong> ${donneesUtilisateur.name}</p>
+                <p><strong>Email :</strong> ${donneesUtilisateur.email}</p>
+                <p><strong>Genre :</strong> ${donneesUtilisateur.gender}</p>
+                <p><strong>Adresse :</strong> ${donneesUtilisateur.address}</p>
+            `;
+        }
+
+        // Afficher les commandes d'utilisateur
+        function afficherCommandes(commandes) {
+            const divCommandes = document.getElementById("commandes");
+            let commandesHTML = '<h3>Commandes :</h3>';
+            commandesHTML += `
+                <table class="users-table">
+                    <tr>
+                        <th>N° Commande</th>
+                        <th>Article</th>
+                        <th>Date</th>
+                        <th>Prix</th>
+                    </tr>
+            `;
+            commandes.forEach(commande => {
+                commandesHTML += `
+                    <tr>
+                        <td>${commande.id}</td>
+                        <td>${commande.item}</td>
+                        <td>${commande.date}</td>
+                        <td>${commande.price} €</td>
+                    </tr>
+                `;
+            });
+            commandesHTML += '</table>';
+            divCommandes.innerHTML = commandesHTML;
+        }
+
+        // Afficher le tableau des utilisateurs 
+        function afficherTableauUtilisateurs() {
+            const tableauUtilisateursContainer = document.getElementById("users-table-container");
+            let tableauHTML = `
+                <h3>Liste des Utilisateurs</h3>
+                <table class="users-table">
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Login</th>
+                        <th>Actions</th>
+                    </tr>
+            `;
+            
+            utilisateurs.forEach(utilisateur => {
+                tableauHTML += `
+                    <tr>
+                        <td>${utilisateur.name}</td>
+                        <td>${utilisateur.email}</td>
+                        <td>${utilisateur.login}</td>
+                        <td>
+                            <button class="profile-btn" onclick="voirProfil('${utilisateur.login}')">
+                                Voir Profil
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableauHTML += '</table>';
+            tableauUtilisateursContainer.innerHTML = tableauHTML;
+        }
+
+        // Afficher le message de chargement
+        function afficherMessageChargement(message) {
+            const divMessageChargement = document.getElementById("therme");
+            divMessageChargement.textContent = message;
+            divMessageChargement.classList.remove("hidden");
+        }
+
+        function cacherMessageChargement() {
+            const divMessageChargement = document.getElementById("therme");
+            divMessageChargement.classList.add("hidden");
+        }
+
+        async function voirProfil(login) {
+            // effacer le contenu des anciens profils et commandes
+            document.getElementById("profile").innerHTML = '';
+            document.getElementById("commandes").innerHTML = '';
+
+            // Afficher un message de chargement pour le profil
+            afficherMessageChargement("Infos en cours de téléchargement...");
+
+            const utilisateur = utilisateurs.find(u => u.login === login);
+
+            if (!utilisateur) return;
+
+            try {
+                const donneesUtilisateur = await recupererDonneesUtilisateur(utilisateur);
+                cacherMessageChargement(); 
+                afficherProfil(donneesUtilisateur); 
+
+                // Afficher le message de chargement des commandes
+                afficherMessageChargement("Les commandes sont en cours de téléchargement...");
+
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                const commandes = donneesUtilisateur.commandes;
+                cacherMessageChargement();
+                afficherCommandes(commandes); 
+
+            } catch (error) {
+                console.error("Erreur lors du chargement des données :", error);
+                afficherMessageChargement("Erreur lors du chargement");
+            }
+        }
+
+        //  le tableau des utilisateurs
+        afficherTableauUtilisateurs();
+    </script>
+</body>
+</html>
